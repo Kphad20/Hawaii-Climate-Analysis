@@ -19,7 +19,7 @@ Base.prepare(engine, reflect=True)
 # Save reference to the table
 Measurement = Base.classes.measurement
 Station = Base.classes.station
-# Flask setup
+# Flask setup, create an app object
 app = Flask(__name__)
 
 ##################################################
@@ -56,7 +56,7 @@ def precipitation():
         precip_dict[date] = prcp
         precip_data.append(precip_dict)
 
-    # Return the JSON representation of your dictionary.
+    # Return the JSON representation.
     return jsonify(precip_data)
 
 @app.route("/api/v1.0/stations")
@@ -75,7 +75,7 @@ def stations():
         station_dict[station] = name
         station_data.append(station_dict)
 
-    # Return a JSON list of stations from the dataset.
+    # Return a JSON list of stations.
     return jsonify(station_data)
 
 @app.route("/api/v1.0/tobs")
@@ -115,11 +115,14 @@ def start(start):
     start_date_list = []
     for tobs in temp_summary:
         start_dict = {}
-        start_dict["TMIN, TMAX, TAVG"] = tobs
+        start_dict["TMIN"] = tobs[0]
+        start_dict["TMAX"] = tobs[1]
+        start_dict["TAVG"] = tobs[2]
         start_date_list.append(start_dict)
-    
+
     # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start date
     return jsonify(start_date_list)
+
 
 @app.route("/api/v1.0/<start>/<end>")
 def start_end(start, end):
@@ -135,7 +138,9 @@ def start_end(start, end):
     start_end_date_list = []
     for tobs in temp_start_end_summary:
         start_end_dict = {}
-        start_end_dict["TMIN, TMAX, TAVG"]= tobs
+        start_end_dict["TMIN"]= tobs[0]
+        start_end_dict["TMAX"]= tobs[1]
+        start_end_dict["TAVG"]= tobs[2]
         start_end_date_list.append(start_end_dict)
     
     # Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start-end date range.
